@@ -96,7 +96,7 @@ export default function Home() {
           {messages.map((message, index) => (
             <article className={`message ${message.role}`} key={`${message.role}-${index}`}>
               <span className="message-label">{message.role === "assistant" ? "STREAMLINE" : "YOU"}</span>
-              {message.role === "user" ? <MarkdownMessage content={message.content} /> : <p>{message.content}</p>}
+              {message.role === "assistant" ? <MarkdownMessage content={message.content} /> : <p>{message.content}</p>}
               {isStreaming && index === messages.length - 1 && <span className="cursor" />}
             </article>
           ))}
