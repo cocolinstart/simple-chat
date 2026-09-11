@@ -1,10 +1,28 @@
 "use client";
 
 import { SubmitEvent, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type Message = { role: "user" | "assistant"; content: string };
 
 const starters = ["解释一下 SSE 是怎么工作的", "给我一个 LangChain.js 示例", "Next.js 的 Route Handler 有什么优势？"];
+
+function MarkdownMessage({ content }: { content: string }) {
+  return (
+    <div className="markdown-content">
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          a: ({ href, children, ...props }) => <a href={href} target="_blank" rel="noreferrer" {...props}>{children}</a>,
+          code: ({ className, children, ...props }) => <code className={className ?? "inline-code"} {...props}>{children}</code>,
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+}
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
@@ -78,7 +96,8 @@ export default function Home() {
           {messages.map((message, index) => (
             <article className={`message ${message.role}`} key={`${message.role}-${index}`}>
               <span className="message-label">{message.role === "assistant" ? "STREAMLINE" : "YOU"}</span>
-              <p>{message.content}{isStreaming && index === messages.length - 1 && <span className="cursor" />}</p>
+              {message.role === "user" ? <MarkdownMessage content={message.content} /> : <p>{message.content}</p>}
+              {isStreaming && index === messages.length - 1 && <span className="cursor" />}
             </article>
           ))}
         </div>
